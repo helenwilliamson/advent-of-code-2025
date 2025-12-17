@@ -13,11 +13,9 @@
                          (range start (inc end)))))))
 (defn valid-id-multiple?
   ([id]
-   (if (odd? (count id))
-     true
-     (let [total-sizes (/ (count id) 2)
-           sizes (range 1 (inc total-sizes))]
-       (every? #(valid-id? id %1) sizes))))
+   (let [total-sizes (/ (count id) 2)
+         sizes (range 1 (inc total-sizes))]
+     (every? #(valid-id-multiple? id %1) sizes)))
   ([id size]
    (let [digits (apply str (take size id))
          number-to-take (/ (count id) size)
@@ -40,5 +38,14 @@
        (flatten)
        (map #(str %1))
        (filter #(not (valid-id? %1)))
+       (map #(Long/parseLong %1))
+       (reduce +)))
+
+(defn part-2
+  [name]
+  (->> (parse-data name)
+       (flatten)
+       (map #(str %1))
+       (filter #(not (valid-id-multiple? %1)))
        (map #(Long/parseLong %1))
        (reduce +)))
